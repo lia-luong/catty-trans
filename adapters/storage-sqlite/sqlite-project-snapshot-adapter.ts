@@ -35,16 +35,19 @@ import type {
   SnapshotId,
 } from '../../core-domain/state/domain-entities';
 import type { ProjectState } from '../../core-domain/state/project-state';
+import { calculateSnapshotChecksum } from '../integrity/checksum-utils';
 
 // Database connection type (abstracted to allow different SQLite drivers).
 // In practice, this would be from 'better-sqlite3' or similar.
 // For this adapter, we assume a minimal interface:
 // - db.run(sql, params): Execute a statement, return void
 // - db.get(sql, params): Execute a query, return a single row or undefined
+// - db.all(sql, params): Execute a query, return an array of all matching rows
 // - db.transaction(fn): Execute a function within a transaction
 export interface Database {
   run(sql: string, ...params: unknown[]): void;
   get<T = unknown>(sql: string, ...params: unknown[]): T | undefined;
+  all<T = unknown>(sql: string, ...params: unknown[]): T[];
   transaction<T>(fn: () => T): T;
 }
 
@@ -71,6 +74,10 @@ export function saveSnapshot(
   // This includes project, segments, and targetSegments in one atomic blob.
   const stateJson = JSON.stringify(state);
 
+  // Calculate SHA-256 checksum for integrity verification.
+  // This enables detection of data corruption during future reads.
+  const checksum = calculateSnapshotChecksum(stateJson);
+
   // Serialise targetLanguages array to JSON for the projects table.
   const targetLangsJson = JSON.stringify(state.project.targetLanguages);
 
@@ -93,16 +100,17 @@ export function saveSnapshot(
       createdAtEpochMs, // Use snapshot timestamp for updated_at
     );
 
-    // Insert the snapshot with full state as JSON.
+    // Insert the snapshot with full state as JSON and its checksum.
     db.run(
       `INSERT INTO project_snapshots (
-        id, project_id, created_at_epoch_ms, label, state_json
-      ) VALUES (?, ?, ?, ?, ?)`,
+        id, project_id, created_at_epoch_ms, label, state_json, checksum
+      ) VALUES (?, ?, ?, ?, ?, ?)`,
       snapshotId,
       state.project.id,
       createdAtEpochMs,
       label ?? null,
       stateJson,
+      checksum,
     );
   });
 }

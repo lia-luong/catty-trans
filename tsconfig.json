@@ -1,0 +1,22 @@
+{
+  "//_comment": "TypeScript configuration for scripts and general development. Extends test config for consistency.",
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "types": ["node"],
+    "lib": ["ES2019"]
+  },
+  "include": [
+    "core-domain/**/*.ts",
+    "adapters/**/*.ts",
+    "scripts/**/*.ts"
+  ]
+}
+

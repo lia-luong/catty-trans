@@ -3,7 +3,7 @@ description: Engineering Decomposition with system architecture, database schemm
 product-name: Catty Trans
 related-docs: docs/prd-catty-trans.md, docs/roadmap.md
 ---
-## 11. Engineering Decomposition (TypeScript + SQLite)
+## Engineering Decomposition (TypeScript + SQLite)
 
 ### 11.1 System Architecture
 

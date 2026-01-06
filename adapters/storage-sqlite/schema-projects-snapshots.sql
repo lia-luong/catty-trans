@@ -48,6 +48,9 @@ CREATE TABLE project_snapshots (
   -- Complete ProjectState serialised as JSON.
   -- Contains: { project: Project, segments: Segment[], targetSegments: TargetSegment[] }
   state_json TEXT NOT NULL,
+  -- SHA-256 checksum of state_json (hex-encoded, 64 characters).
+  -- Used for integrity verification to detect corruption.
+  checksum TEXT NOT NULL,
   FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
 
@@ -56,3 +59,6 @@ CREATE INDEX idx_snapshots_project_created ON project_snapshots(project_id, crea
 
 -- Index for snapshot ID lookups (used during rollback)
 CREATE INDEX idx_snapshots_id ON project_snapshots(id);
+
+-- Index for checksum lookups (used during integrity verification)
+CREATE INDEX idx_snapshots_checksum ON project_snapshots(checksum);

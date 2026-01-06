@@ -132,6 +132,7 @@ Use standard documentation formats (JSDoc, Docstrings) for functions or classes 
 
 ## 5. File Organization
 
+- Any new file should follow the repository structured described in README.md
 - One Thing Per File: One component or class per file.
 - Import Order:
 

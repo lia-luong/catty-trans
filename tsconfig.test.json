@@ -1,0 +1,21 @@
+{
+  "//_comment": "TypeScript configuration used by ts-jest when compiling tests and source files. This intentionally focuses on Node-style resolution for the current TypeScript-only codebase.",
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "rootDir": ".",
+    "baseUrl": "."
+  },
+  "include": [
+    "core-domain/**/*.ts",
+    "adapters/**/*.ts",
+    "tests/**/*.ts"
+  ]
+}
+
+

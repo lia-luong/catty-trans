@@ -11,3 +11,10 @@ related-docs: docs/prd-catty-trans.md, docs/tech-decomposition.md, docs/roadmap.
 - **feat(storage-sqlite)**: Defined SQLite schema and adapter for persisting full project snapshots as JSON, including atomic upsert/insert semantics, foreign-key-backed integrity, and defensive loading that returns `null` on corruption instead of propagating invalid state.
 - **docs(architecture)**: Added repository-level README and detailed PRD/technical decomposition describing the CAT/TMS goals, offline-first architecture, and responsibilities of core services such as TM, snapshot, diff, QA, and import/export.
 
+## 2026-01-07
+
+- **feat(integrity)**: Implemented comprehensive snapshot integrity verification system that detects data corruption, orphaned snapshots, and domain invariant violations. System performs checksum validation, JSON parsing verification, referential integrity checks, and history graph consistency validation. Never auto-repairs; always fails loudly with explicit error reporting to prevent silent data loss.
+- **feat(storage-sqlite)**: Added SHA-256 checksum calculation and storage for all project snapshots to enable corruption detection. Updated schema to include checksum column with index for efficient integrity verification queries.
+- **test(infrastructure)**: Established comprehensive golden test suite covering core domain invariants, translation memory rules, diff engine behavior, and failure scenarios. Tests enforce immutability, rollback correctness, and explainability requirements that must never be violated.
+- **chore(scripts)**: Added exercise-spine script to demonstrate complete workflow (project creation, translation changes, snapshots, rollback) without UI dependencies, validating end-to-end data flow.
+
