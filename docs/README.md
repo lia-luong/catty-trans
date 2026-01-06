@@ -17,6 +17,16 @@ This folder contains the core product and engineering documentation for the Catt
   - Content: phased delivery plan, milestones, success criteria, and risks.  
   - When to read: after you understand the product and architecture, to see *when* and in what order we plan to deliver capabilities.
 
+- **`adr/` – Architectural Decision Records**  
+  - Audience: engineering.  
+  - Content: documented architectural decisions, rationale, and consequences.  
+  - When to read: when implementing features that touch on documented decisions, or when proposing architectural changes.
+
+- **`adapter-domain-boundary.md` – Adapter-Domain Boundary Guide**  
+  - Audience: engineering (especially new developers).  
+  - Content: clear examples of the architectural boundary between pure domain logic and side-effect adapters.  
+  - When to read: before implementing features in `core-domain` or `adapters` to understand where code belongs.
+
 ### Suggested Reading Paths
 
 - **New collaborators (product/engineering)**: `prd-catty-trans.md` → `tech-decomposition.md` → `roadmap.md`.
@@ -27,4 +37,3 @@ This folder contains the core product and engineering documentation for the Catt
 
 - All docs include a short front matter block (`description`, `product-name`, `related-docs`) to make cross-linking and discovery easier.  
 - When adding new docs to this folder, follow the same front matter pattern and update this `README.md` with a short description and recommended audience.
-

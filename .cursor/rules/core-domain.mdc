@@ -1,5 +1,6 @@
 ---
-alwaysApply: true
+description: All business/domain logic for the CAT/TMS must live in `core-domain` and pure TypeScript files only
+alwaysApply: false
 ---
 - **Domain boundary**
   - All business/domain logic for the CAT/TMS must live in `core-domain`.

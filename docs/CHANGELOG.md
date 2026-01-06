@@ -18,3 +18,11 @@ related-docs: docs/prd-catty-trans.md, docs/tech-decomposition.md, docs/roadmap.
 - **test(infrastructure)**: Established comprehensive golden test suite covering core domain invariants, translation memory rules, diff engine behavior, and failure scenarios. Tests enforce immutability, rollback correctness, and explainability requirements that must never be violated.
 - **chore(scripts)**: Added exercise-spine script to demonstrate complete workflow (project creation, translation changes, snapshots, rollback) without UI dependencies, validating end-to-end data flow.
 
+## 2026-01-08
+
+- **docs(architecture)**: Conducted comprehensive architectural review identifying domain purity, immutability guarantees, and potential risks. Documented architectural decision records (ADR) for state equality optimization strategy and purity requirements for planned TM/diff/guards modules.
+- **feat(core-domain)**: Created placeholder modules with pure type definitions and function signatures for Translation Memory (`/tm`), diff computation (`/diff`), and validation guards (`/guards`). These modules establish architectural boundaries before implementation, ensuring future code remains pure with no side effects.
+- **test(architecture)**: Added golden tests for TM, diff, and guards modules to prevent accidental introduction of I/O, database access, or side effects into domain logic. Tests automatically enforce architectural purity when these modules are implemented.
+- **docs(boundary)**: Created comprehensive adapter-domain boundary guide with clear examples showing correct patterns (domain = pure functions, adapters = side effects) and common mistakes to avoid. This documentation prevents architectural erosion during feature development.
+- **docs(readme)**: Updated README to mark planned modules (TM, diff, guards) as "not yet implemented" and added explicit note that these must remain pure when built.
+
