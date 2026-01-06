@@ -47,3 +47,7 @@ related-docs: docs/prd-catty-trans.md, docs/tech-decomposition.md, docs/roadmap.
 - Confirmed codebase follows best practices with zero violations
 - Documented performance trade-offs with clear review triggers
 - Defined "do not build yet" list: fuzzy matching, collaborative editing, auto-suggestions (awaiting user research)
+
+**Test Infrastructure:**
+- Fixed Jest configuration to properly resolve TypeScript type definitions for test files
+- Added missing `@jest/test-sequencer` dependency to resolve module resolution errors

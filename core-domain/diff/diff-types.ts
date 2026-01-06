@@ -485,4 +485,3 @@ export function explainDiff(diff: DiffResult): ReadonlyArray<string> {
   
   return explanations;
 }
-

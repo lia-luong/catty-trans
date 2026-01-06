@@ -9,6 +9,13 @@ const config = {
   // can be imported directly without a separate build step.
   preset: 'ts-jest',
 
+  // Use the test-specific tsconfig which includes jest types
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.test.json',
+    },
+  },
+
   // Treat the repository root as the base for module resolution, so tests
   // can use simple relative imports to the domain modules.
   roots: ['<rootDir>/tests', '<rootDir>/core-domain', '<rootDir>/adapters'],
