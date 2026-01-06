@@ -1,0 +1,29 @@
+---
+alwaysApply: true
+---
+- **Domain boundary**
+  - All business/domain logic for the CAT/TMS must live in `core-domain`.
+  - `core-domain` is the *only* place where domain rules, invariants, and state models are defined and enforced.
+
+- **Purity of `core-domain`**
+  - `core-domain` is **pure TypeScript only**:
+    - No filesystem access.
+    - No database access.
+    - No network calls.
+    - No timers, randomness, or other side effects.
+  - It also **may not import from any adapters, UI, or runtime layers**; dependencies only go *outwards* from those layers into `core-domain`, never the other way around.
+
+- **State & transitions**
+  - All state transitions are **pure, deterministic functions**:
+    - Given the same input state + command/event, they must always return the same next state/output.
+    - No hidden context, no singletons, no global mutable state.
+  - Existing state objects are **never mutated**:
+    - Transitions always return **new** state objects (persistent/immutable style updates).
+
+- **Conflict handling**
+  - If any requirement you give would force:
+    - side effects inside `core-domain`,
+    - direct IO/DB/network from domain logic,
+    - `core-domain` to depend on UI/adapters/runtime,
+    - or non-deterministic / mutating domain transitions,
+  - AI coding agent should **stop**, explain the architectural conflict, and then **propose an alternative design** that keeps side effects and integrations in outer layers while preserving a pure `core-domain`.
