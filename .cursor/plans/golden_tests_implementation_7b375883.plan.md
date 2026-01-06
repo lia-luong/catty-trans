@@ -194,4 +194,3 @@ Tests will be organized in `tests/` directory mirroring the golden test structur
 
 1. **Golden tests run first**: These tests must pass before any other tests
 2. **Fail fast**: If a golden test fails, the change is rejected unless the test is explicitly revised
-3. **Deterministic**: All tests must be deterministic (no randomness, no time-dependent behavior)

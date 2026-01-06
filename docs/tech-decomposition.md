@@ -124,15 +124,20 @@ CREATE TABLE tm_metadata (
 -- TM units (translation units)
 CREATE TABLE tm_units (
   id TEXT PRIMARY KEY,
+  client_id TEXT NOT NULL, -- Structural client isolation; matches database name
+  project_id TEXT NOT NULL, -- Provenance: which project created this entry
+  snapshot_id TEXT NOT NULL, -- Provenance: which snapshot this entry came from
   source_text TEXT NOT NULL,
   target_text TEXT NOT NULL,
-  source_hash TEXT NOT NULL, -- for exact match lookup
-  created_at INTEGER NOT NULL,
-  usage_count INTEGER NOT NULL DEFAULT 1,
-  metadata JSON -- project origin, translator notes, etc.
+  created_at INTEGER NOT NULL, -- Epoch milliseconds; explicit creation timestamp
+  source_hash TEXT NOT NULL, -- Adapter optimization: SHA-256 for exact match lookup
+  usage_count INTEGER NOT NULL DEFAULT 1, -- Adapter optimization: query performance
+  metadata JSON -- Optional translator notes, custom tags, or workflow flags; provenance (project_id, snapshot_id) stored as columns above
 );
 
 CREATE UNIQUE INDEX idx_tm_source_hash ON tm_units(source_hash);
+CREATE INDEX idx_tm_client_project ON tm_units(client_id, project_id);
+CREATE INDEX idx_tm_snapshot ON tm_units(snapshot_id);
 
 -- Full-text search index for fuzzy matching
 CREATE VIRTUAL TABLE tm_units_fts USING fts5(
@@ -578,6 +583,35 @@ PRAGMA mmap_size = 268435456; -- 256MB memory-mapped I/O
 -- migrations/002_add_segment_notes.sql
 ALTER TABLE segments ADD COLUMN notes TEXT;
 UPDATE PRAGMA user_version = 2;
+```
+
+**TM units provenance migration** (for existing `tm_units` tables):
+When migrating to the new schema with explicit `client_id`, `project_id`, and `snapshot_id` columns:
+- Extract `client_id` from database filename pattern `tm_{client_id}.db`
+- Extract `project_id` and `snapshot_id` from JSON `metadata` field (if present)
+- Validate that all entries have provenance data before schema change
+- Migration script should fail gracefully if provenance data is missing
+
+```sql
+-- migrations/003_add_tm_provenance_columns.sql
+-- Step 1: Add new columns (nullable initially)
+ALTER TABLE tm_units ADD COLUMN client_id TEXT;
+ALTER TABLE tm_units ADD COLUMN project_id TEXT;
+ALTER TABLE tm_units ADD COLUMN snapshot_id TEXT;
+
+-- Step 2: Populate from metadata JSON and database context
+-- (Implementation depends on JSON extraction logic in adapter layer)
+
+-- Step 3: Make columns NOT NULL after data migration
+-- ALTER TABLE tm_units ALTER COLUMN client_id SET NOT NULL;
+-- ALTER TABLE tm_units ALTER COLUMN project_id SET NOT NULL;
+-- ALTER TABLE tm_units ALTER COLUMN snapshot_id SET NOT NULL;
+
+-- Step 4: Add indexes
+CREATE INDEX idx_tm_client_project ON tm_units(client_id, project_id);
+CREATE INDEX idx_tm_snapshot ON tm_units(snapshot_id);
+
+UPDATE PRAGMA user_version = 3;
 ```
 
 ---

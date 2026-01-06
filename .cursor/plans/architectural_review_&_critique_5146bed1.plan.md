@@ -4,9 +4,7 @@ overview: Comprehensive architectural review identifying domain impurities, hidd
 todos: []
 ---
 
-# Ar
-
-chitectural Review: Catty Trans Codebase
+# Architectural Review: Catty Trans Codebase
 
 ## Executive Summary
 
@@ -320,7 +318,3 @@ export function applyTranslationChange(
 - **DO NOT** import adapters from `core-domain`
 - **DO NOT** build TM/Diff/Guards as adapters
 - **DO NOT** optimize prematurely
-
-### 📋 **Next Steps**
-
-1. Update README to reflect current state

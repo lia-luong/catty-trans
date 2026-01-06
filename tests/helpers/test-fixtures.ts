@@ -26,6 +26,7 @@ import type {
   Snapshot,
   VersionedState,
 } from '../../core-domain/history/versioning';
+import type { PromotionContext } from '../../core-domain/tm/promotion-guard';
 
 // Simple deterministic brand-casting helper so tests can create ids without
 // pulling in any runtime generators. This keeps tests explicit while matching
@@ -166,4 +167,21 @@ export function makeVersionedState(
   };
 }
 
+// Create a PromotionContext for testing TM promotion rules. This bundles the
+// project, snapshot reference, and ad-hoc flag so tests can focus on the
+// specific rule being validated rather than boilerplate setup.
+export function makePromotionContext(
+  project: Project,
+  segment: Segment,
+  overrides: Partial<Omit<PromotionContext, 'project' | 'sourceSegment'>> = {},
+): PromotionContext {
+  return {
+    project,
+    snapshotId: overrides.snapshotId ?? asBrand<SnapshotId>('snapshot-1'),
+    sourceSegment: segment,
+    isAdHoc: overrides.isAdHoc ?? false,
+    targetClientId: overrides.targetClientId,
+    existingSourceTexts: overrides.existingSourceTexts,
+  };
+}
 

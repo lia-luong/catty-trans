@@ -1,6 +1,5 @@
 ---
-description: Coding Standards & Best Practices
-alwaysApply: false
+alwaysApply: true
 ---
 # Overview
 
@@ -73,10 +72,7 @@ if (!user || !user.isActive) return
 ## 4. Comments & Documentation
 
 ### General rules
-- Before you write a single line of real code, write the logic out in plain English comments. This separates the "thinking" from the "coding".
-  Step 1: Write the plan
-  Step 2: Fill in the code: Once the logic is sound, write the code underneath each comment.
-  Step 3: Clean up: Delete the comments that are now obvious from the code itself. Step 3: Keep only the ones that explain rules.
+
 - **Focus on intent:** Explain _why_ the code exists, not _what_ the syntax does.
 - **No Redundancy:** Do not write comments that simply repeat the code.
 - **Refactor first:** If logic is hard to explain, try renaming variables before writing a comment.
@@ -86,14 +82,14 @@ if (!user || !user.isActive) return
 
 ---
 
-### 1\. The "Why" Rule
+### 1. The "Why" Rule
 
 Do not translate syntax into English. Assume the reader barely knows the programming language.
 
 - **Bad:** `// Check if count is greater than 5`
 - **Good:** `// Retry limit reached; trigger fallback protocol`
 
-### 2\. Self-Documenting Code
+### 2. Self-Documenting Code
 
 Comments are often a deodorant for smelly code. Before adding a block comment, ask if a variable rename solves the problem.
 
@@ -111,7 +107,7 @@ Comments are often a deodorant for smelly code. Before adding a block comment, a
   if (isLegalAdult)
   ```
 
-### 3\. Standard Annotations
+### 3. Standard Annotations
 
 Use specific keywords to make technical debt searchable.
 
@@ -120,17 +116,17 @@ Use specific keywords to make technical debt searchable.
 - `HACK`: Non-standard workarounds. Explain the constraint forcing the hack.
 - `NOTE`: Highlights edge cases or unintuitive behaviour.
 
-### 4\. Public API Documentation
+### 4. Public API Documentation
 
 Use standard documentation formats (JSDoc, Docstrings) for functions or classes other teams will use. Define **inputs**, **outputs**, and **errors**.
 
-### 5\. Forbidden Practices
+### 5. Forbidden Practices
 
 - **No Dead Code:** Do not leave commented-out code blocks. Delete them. Git history is your backup.
 - **No Diaries:** Do not add names or dates (`// Added by Dave 2024`). Git `blame` handles authorship.
 - **No Closing Labels:** Avoid `} // end if`. If the block is that long, refactor it.
 
-## 5. File Organization
+## 6. File Organization
 
 - Any new file should follow the repository structured described in README.md
 - One Thing Per File: One component or class per file.
@@ -142,7 +138,7 @@ Use standard documentation formats (JSDoc, Docstrings) for functions or classes 
 
   Relative Imports (./styles, ./types)
 
-## 6. Source Control (Git)
+## 7. Source Control (Git)
 
 We follow Conventional Commits to keep our history clean and readable.
 
@@ -160,7 +156,7 @@ Types:
 
 Example: `feat(auth): implement jwt token refresh logic`
 
-## 7. Tooling
+## 8. Tooling
 
 - Do not argue about spacing or semicolons in Code Reviews.
 - Prettier: Formatting is automatic on save.

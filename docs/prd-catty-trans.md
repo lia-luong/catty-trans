@@ -161,6 +161,20 @@ product-name: Catty Trans
 
 **Failure mode**: If diff request spans large state change (e.g., 1000+ modified segments), system paginates and warns: "Diff contains 1,243 changes. Load first 100? [Load all | Filter by segment status | Export full report]."
 
+**Provenance Tracking**:
+
+Provenance indicates where a change came from (TM, manual edit, or unknown). The system captures provenance when:
+
+- **Captured:** Accepting TM match via UI, bulk TM operations, any workflow where TM involvement is explicit
+- **Not captured:** Manual typing, paste from clipboard, offline edits without TM, imported translations from external files
+
+Change causes displayed in diffs:
+- **"Translation applied from TM match"**: Segment was filled by accepting a TM suggestion
+- **"Manually edited by translator"**: Explicit manual edit operation (future: tracked via editor actions)
+- **"No provenance captured"**: Change occurred without tracking (manual edit or TM without provenance)
+
+The "No provenance captured" cause is **not an error**. It represents honest absence of tracking data, which commonly occurs during manual translation workflows. This is preferable to guessing or inventing reasons for changes.
+
 ### 4.5 Offline-First Behaviour and Sync Rules
 
 **What it does**:
