@@ -106,6 +106,81 @@ export function insertTMEntry(db: Database, entry: TMEntry): void {
   });
 }
 
+// insertTMEntryBatch persists multiple TM entries to the database, allowing partial success.
+// Unlike insertTMEntry (all-or-nothing), batch insert processes each entry individually,
+// enabling UI to display: "5 inserted, 195 skipped (duplicates), 0 failed".
+//
+// Transaction boundaries:
+// - Each entry runs in its own transaction (individual attempt)
+// - Duplicate entries (PRIMARY KEY constraint) are caught and marked 'skipped'
+// - Other errors are caught and marked 'failed'
+// - Successfully inserted entries are marked 'inserted'
+//
+// Result structure allows UI to:
+// - Display explicit counts: "195 already in TM, 5 new entries added"
+// - Retry only failed entries if needed
+// - Offer "Update existing?" workflow for skipped entries
+//
+// Return value: BatchInsertResult with three categories
+// - inserted: entries successfully written to database
+// - skipped: entries rejected due to duplicate constraint
+// - failed: entries rejected for other reasons (will log error details)
+export type BatchInsertResult = {
+  readonly inserted: readonly TMEntry[];
+  readonly skipped: readonly TMEntry[];
+  readonly failed: readonly TMEntry[];
+};
+
+export function insertTMEntryBatch(
+  db: Database,
+  entries: readonly TMEntry[],
+): BatchInsertResult {
+  const inserted: TMEntry[] = [];
+  const skipped: TMEntry[] = [];
+  const failed: TMEntry[] = [];
+
+  // Process each entry individually to allow partial success.
+  for (const entry of entries) {
+    try {
+      // Attempt to insert in individual transaction.
+      db.transaction(() => {
+        db.run(
+          `INSERT INTO tm_entries (
+            client_id, source_text, target_text, project_id, snapshot_id,
+            created_at_epoch_ms
+          ) VALUES (?, ?, ?, ?, ?, ?)`,
+          entry.clientId,
+          entry.sourceText,
+          entry.targetText,
+          entry.projectId,
+          entry.snapshotId,
+          entry.createdAt,
+        );
+      });
+
+      // Insert succeeded; add to inserted list.
+      inserted.push(entry);
+    } catch (error) {
+      // Check if this is a duplicate constraint violation.
+      // SQLite raises SQLITE_CONSTRAINT on PRIMARY KEY violation.
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('UNIQUE constraint failed') || errorMessage.includes('PRIMARY KEY')) {
+        // This is expected for duplicate entries; mark as skipped.
+        skipped.push(entry);
+      } else {
+        // This is an unexpected error; mark as failed.
+        failed.push(entry);
+      }
+    }
+  }
+
+  return {
+    inserted: inserted as readonly TMEntry[],
+    skipped: skipped as readonly TMEntry[],
+    failed: failed as readonly TMEntry[],
+  };
+}
+
 // queryTMExactMatch retrieves a TM entry for an exact source text match within
 // a specific client's TM. Returns the matched entry or undefined if no match found.
 //

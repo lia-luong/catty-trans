@@ -317,4 +317,3 @@ export function applyTranslationChange(
 - **DO NOT** add IO to `core-domain`
 - **DO NOT** import adapters from `core-domain`
 - **DO NOT** build TM/Diff/Guards as adapters
-- **DO NOT** optimize prematurely

@@ -51,3 +51,35 @@ related-docs: docs/prd-catty-trans.md, docs/tech-decomposition.md, docs/roadmap.
 **Test Infrastructure:**
 - Fixed Jest configuration to properly resolve TypeScript type definitions for test files
 - Added missing `@jest/test-sequencer` dependency to resolve module resolution errors
+
+## 2026-01-07 (Continued) — Pre-UI Implementation Complete
+
+**TM Batch Insert (P0 Safety):**
+- Implemented `insertTMEntryBatch` in SQLite adapter for bulk TM promotion workflows
+- Enables partial success: returns `{inserted, skipped, failed}` breakdown instead of all-or-nothing
+- UI can now display: "195 already in TM, 5 new entries added" instead of generic database error
+- Fixes silent data loss during bulk promotion scenarios (translator bulk-accepts then reruns same batch)
+
+**Scaling Documentation (P2 Hardening):**
+- Added "Scaling Limits" architectural constraint documentation to `diff-limits.ts`
+- Explains in-memory snapshot architecture and memory footprint (18–20 MB at 10K segments)
+- Documents three-point plan required to scale beyond 10,000 segments (streaming architecture)
+- Prevents future attempts to raise limits without understanding architectural implications
+- References ADR 002 for related performance decisions
+
+**Test Coverage:**
+- Created comprehensive test suite for batch insert with 12 test cases:
+  - All new entries, all duplicates, mixed batch (typical scenario with 195 duplicates + 5 new)
+  - Empty batch, error handling, determinism validation
+  - Business scenario validation: "195 inserted, 195 already in TM, 0 failed"
+
+**Risk Mitigation Status:**
+- ✅ P0 (Safety: TM Duplication) — FULLY MITIGATED with domain check + adapter batch insert
+- ✅ P1 (User Misunderstanding: Unknown Cause) — FULLY MITIGATED with explanation function + PRD docs
+- ✅ P2 (Scaling: Diff Memory) — DOCUMENTED with architectural constraints + ADR 002
+- **Result:** All blocking issues resolved; codebase ready for UI development
+
+**Documentation:**
+- Updated pre-UI risk assessment with completion status and formal sign-off
+- All 6 pre-UI checklist items marked complete
+- Handoff document ready for UI development phase

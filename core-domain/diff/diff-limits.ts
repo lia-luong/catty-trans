@@ -5,6 +5,27 @@
 //
 // Core principle: Partial diffs are always labelled. Silent truncation is forbidden.
 
+// ============================================================================
+// SCALING LIMITS — ARCHITECTURAL CONSTRAINTS
+// ============================================================================
+//
+// The diff engine operates on in-memory snapshots. Both ProjectState objects
+// (from/to) are fully loaded before comparison begins.
+//
+// Memory footprint estimate at MAX_SEGMENTS_PER_DIFF (10,000 segments):
+//   ~18-20 MB peak memory usage
+//   Formula: (segmentCount * 2 * ~150 bytes) + (changesCount * ~250 bytes)
+//
+// IMPORTANT: Raising MAX_SEGMENTS_PER_DIFF beyond 10,000 requires architectural
+// changes:
+//   1. Streaming/iterator-based diff algorithm
+//   2. Cursor-based segment loading from adapter
+//   3. Incremental change emission (yield batches)
+//
+// Estimated effort for streaming refactor: 2-3 weeks
+// See: docs/adr/002-state-equality-performance.md
+// ============================================================================
+
 // Threshold constant: maximum number of segments in a project that diff will
 // attempt to compute. Beyond this, diff computation is refused to prevent
 // resource exhaustion and ensure results remain human-reviewable.

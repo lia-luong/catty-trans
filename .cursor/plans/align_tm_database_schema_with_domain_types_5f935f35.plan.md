@@ -107,6 +107,3 @@ metadata JSON -- Optional translator notes, custom tags, or workflow flags; prov
 ## Files to Modify
 
 1. `docs/tech-decomposition.md` - Update `tm_units` table schema (lines 124-156)
-2. Add migration notes section if not already present
-
-## Alignment with Domain Types
